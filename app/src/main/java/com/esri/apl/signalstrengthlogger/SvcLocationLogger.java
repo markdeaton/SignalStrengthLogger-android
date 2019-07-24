@@ -2,6 +2,8 @@ package com.esri.apl.signalstrengthlogger;
 
 import android.annotation.SuppressLint;
 import android.app.Notification;
+import android.app.NotificationChannel;
+import android.app.NotificationManager;
 import android.app.PendingIntent;
 import android.app.Service;
 import android.content.BroadcastReceiver;
@@ -19,10 +21,6 @@ import android.os.Build;
 import android.os.IBinder;
 import android.os.Looper;
 import android.preference.PreferenceManager;
-import android.support.annotation.NonNull;
-import android.support.v4.app.NotificationCompat;
-import android.support.v4.app.NotificationManagerCompat;
-import android.support.v4.content.LocalBroadcastManager;
 import android.telephony.CellInfo;
 import android.telephony.CellInfoGsm;
 import android.telephony.CellInfoLte;
@@ -33,6 +31,11 @@ import android.telephony.CellSignalStrengthWcdma;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.NonNull;
+import androidx.core.app.NotificationCompat;
+import androidx.core.app.NotificationManagerCompat;
+import androidx.localbroadcastmanager.content.LocalBroadcastManager;
 
 import com.esri.apl.signalstrengthlogger.data.DBHelper;
 import com.esri.apl.signalstrengthlogger.data.ReadingDataPoint;
@@ -93,7 +96,6 @@ public class SvcLocationLogger extends Service {
   private String mCellCarrierName;
   private int MAX_CHART_DATA_POINTS;
 
-
   @Override
   public IBinder onBind(Intent intent) {
     Log.d(TAG, "onBind");
@@ -110,6 +112,10 @@ public class SvcLocationLogger extends Service {
   @Override
   public void onCreate() {
     super.onCreate();
+
+    // Get a notification channel ID
+    createNotificationChannel();
+
     mSharedPrefs = PreferenceManager.getDefaultSharedPreferences(this);
 
     mDeviceId = mSharedPrefs.getString(getString(R.string.pref_key_device_id), null);
@@ -133,6 +139,24 @@ public class SvcLocationLogger extends Service {
     Log.d(TAG, "onCreate");
   }
 
+  private NotificationChannel createNotificationChannel() {
+    NotificationChannel nc = null;
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+      NotificationManager nm = getSystemService(NotificationManager.class);
+      // The channel could possibly have already been created...
+      nc = nm.getNotificationChannel(getString(R.string.notif_chan_id));
+      if (nc == null) {
+        // ...but if not, create it here
+        nc = new NotificationChannel(
+                getString(R.string.notif_chan_id),
+                getString(R.string.notif_chan_name),
+                NotificationManager.IMPORTANCE_LOW);
+        nm.createNotificationChannel(nc);
+      }
+    }
+    return nc;
+  }
+
   /** Show a non-dismissible notification while the service is running.
    * Make it launch the main activity if the user taps it; this lets them make changes
    * or stop logging. */
@@ -143,7 +167,8 @@ public class SvcLocationLogger extends Service {
         PendingIntent.getActivity(this, ACT_PI_REQ_CODE, intent,
             PendingIntent.FLAG_UPDATE_CURRENT);
 
-    NotificationCompat.Builder nb = new NotificationCompat.Builder(this, null)
+
+    NotificationCompat.Builder nb = new NotificationCompat.Builder(this, getString(R.string.notif_chan_id))
         .setSmallIcon(R.drawable.ic_cellsignal)
         .setTicker(getString(R.string.notif_ticker))
         .setContentTitle(getString(R.string.notif_title))
@@ -412,7 +437,7 @@ public class SvcLocationLogger extends Service {
   /** The main activity might be gone from memory. The only UI a service has is notifications. */
   private void showErrorNotification(int notifId, String errText) {
     Context ctx = this;
-    Notification notification = new NotificationCompat.Builder(ctx)
+    Notification notification = new NotificationCompat.Builder(ctx, getString(R.string.notif_chan_id))
         .setContentTitle(getString(R.string.title_err_synchronization))
         .setStyle(new NotificationCompat.BigTextStyle()
             .bigText(getString(R.string.msg_err_synchronization, errText)))
@@ -453,7 +478,7 @@ public class SvcLocationLogger extends Service {
     Log.d(TAG, "set_unsyncedRecordCount => " + unsyncedRecordCount);
     this._unsyncedRecordCount.set(unsyncedRecordCount);
 
-    if (this._unsyncedRecordCount.get() == 0 || this._unsyncedRecordCount.get() % 5 == 0)
+//    if (this._unsyncedRecordCount.get() == 0 || this._unsyncedRecordCount.get() % 5 == 0)
       updateSvcNotificationText(
           getString(R.string.notif_unsynced_records, this._unsyncedRecordCount.get()));
 

@@ -11,7 +11,7 @@
 
     <string name="pref_key_feat_svc_url">feat_svc_url</string>
     <string name="pref_title_feat_svc_url">Feature Service URL</string>
-    <string name="pref_default_feat_svc_url">https://&lt;path-to-feature-service-layer&gt;/&lt;layer-number&gt;/addFeatures</string>
+    <string name="pref_default_feat_svc_url">https://&lt;path-to-feature-service-layer&gt;/&lt;layer-number&gt;</string>
 
     <string name="pref_key_token_url">token_generator_url</string>
     <string name="pref_title_token_url">Token Generator Service URL</string>

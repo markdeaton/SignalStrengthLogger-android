@@ -25,7 +25,7 @@
         android:layout_height="1dp"
         android:foreground="@android:color/black"/>
 
-    <android.support.constraint.ConstraintLayout
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/lytSignalChart"
         android:layout_width="match_parent"
         android:layout_height="0dp"
@@ -63,5 +63,5 @@
                 android:enabled="false"
                 android:text="Sync Now"/>
         </LinearLayout>
-    </android.support.constraint.ConstraintLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </LinearLayout>

@@ -3,7 +3,7 @@
 
     <string name="notif_ticker">Logging Signal Strength</string>
     <string name="notif_title">Signal Strength Logging</string>
-    <string name="notif_chan_id">com.esri.apl.signalstrengthlogger</string>
+    <string name="notif_chan_id">notification_channel_app_signalstrengthlogger</string>
     <string name="notif_chan_name">Signal Strength Logger</string>
 
     <!-- TODO Change this if you want to change the database schema and what's being recorded -->

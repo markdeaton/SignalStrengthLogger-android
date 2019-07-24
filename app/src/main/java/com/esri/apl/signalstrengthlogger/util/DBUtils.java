@@ -6,9 +6,10 @@ import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.net.ConnectivityManager;
-import android.support.annotation.WorkerThread;
 import android.text.TextUtils;
 import android.util.Log;
+
+import androidx.annotation.WorkerThread;
 
 import com.esri.apl.signalstrengthlogger.R;
 import com.esri.apl.signalstrengthlogger.data.TokenInfo;
@@ -133,7 +134,8 @@ public class DBUtils {
     if (bUserIdSpecified) tokenInfo = getAGOLToken(ctx, sharedPrefs);
 
     // Post via REST
-    String svcUrl = sharedPrefs.getString(ctx.getString(R.string.pref_key_feat_svc_url), null);
+    String svcUrl = sharedPrefs.getString(ctx.getString(R.string.pref_key_feat_svc_url), null)
+            + "/addFeatures";
     List<Long> successes = new ArrayList<>();
     OkHttpClient http = new OkHttpClient();
 
