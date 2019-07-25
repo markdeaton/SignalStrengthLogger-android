@@ -56,7 +56,7 @@ of detecting.
     This app does not use the Esri runtime for Android. It only needs to write data
     out to a feature service layer, not to read or to map it. So it makes http POST operations
     directly against the REST endpoint for the feature service layer. You can change this
-    service in the settings page; note that it should include the `addFeature` portion of
+    service in the settings page; note that it should *not* include the `addFeature` portion of
     the URL.
 1. Generating tokens for updating secure feature services<p/>
     If you specify a username, password,
