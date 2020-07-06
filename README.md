@@ -1,3 +1,5 @@
+#Update, 7/6/2020: this repo is now archived.
+
 # SignalStrengthLogger-android
 Detects and logs cell signal strength along with device location.
 
